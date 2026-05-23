@@ -1,0 +1,10 @@
+{
+    "name": "groupe3/todo-list",
+    "description": "Application To Do List — LPDWCA Laurent Boyer",
+    "type": "project",
+    "require": {
+        "php": ">=7.4",
+        "ext-pdo": "*",
+        "ext-json": "*"
+    }
+}
