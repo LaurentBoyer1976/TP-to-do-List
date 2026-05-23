@@ -12,11 +12,14 @@
  * @var string $pageScripts
  */
 ?>
-<!-- noinspection HtmlRequiredLangAttribute -->
-<!-- noinspection HtmlUnknownTarget -->
+<?php
+// PhpStorm signale des "closing tag matches nothing" sur </div>, </body>, </html>
+// car ce template partiel est inclus par les pages principales qui ouvrent ces balises
+// dans header.php. C'est un comportement normal du pattern header/footer en PHP.
+?>
 </div>
 <footer class="text-center text-muted py-4 mt-5 border-top">
-    <small>To Do List &mdash; LPDWCA Groupe 3 &mdash; <?= date('Y') ?></small>
+    <small>To Do List &mdash; LPDWCA Laurent Boyer &mdash; <?= date('Y') ?></small>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <?php if (!empty($pageScripts)): ?>

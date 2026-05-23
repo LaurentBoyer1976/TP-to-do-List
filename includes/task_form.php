@@ -164,50 +164,52 @@
  *     du select "Compétence" avec uniquement les valeurs autorisées
  *  3. En mode édition, la compétence actuelle est pré-sélectionnée
  */
-$pageScripts = '<script>
-// Données injectées par PHP : couples (difficulté, compétence) autorisés
-const associations = ' . json_encode($associations) . ';
-// Liste complète des niveaux de compétence
-const allCompetences = ' . json_encode($competences) . ';
-// Compétence actuelle (null en mode création)
-const currentCompetence = ' . json_encode($task['id_niveau_competence_requis'] ?? null) . ';
+?>
+<?php ob_start(); ?>
+<script>
+    // Données injectées par PHP : couples (difficulté, compétence) autorisés
+    var associations = <?= json_encode($associations) ?>;
+    // Liste complète des niveaux de compétence
+    var allCompetences = <?= json_encode($competences) ?>;
+    // Compétence actuelle (null en mode création)
+    var currentCompetence = <?= json_encode($task['id_niveau_competence_requis'] ?? null) ?>;
 
-const diffSelect = document.getElementById("id_niveau_difficulte");
-const compSelect = document.getElementById("id_niveau_competence_requis");
+    var diffSelect = document.getElementById("id_niveau_difficulte");
+    var compSelect = document.getElementById("id_niveau_competence_requis");
 
-/**
- * Reconstruit les options du select Compétence
- * en ne gardant que celles associées à la difficulté choisie.
- */
-function updateCompetences() {
-    const diffId = parseInt(diffSelect.value);
-    compSelect.innerHTML = "";
+    /**
+     * Reconstruit les options du select Compétence
+     * en ne gardant que celles associées à la difficulté choisie.
+     */
+    function updateCompetences() {
+        var diffId = parseInt(diffSelect.value);
+        compSelect.innerHTML = "";
 
-    if (!diffId) {
-        compSelect.innerHTML = "<option value=\"\">-- Choisir une difficulté d\'abord --</option>";
-        return;
+        if (!diffId) {
+            compSelect.innerHTML = '<option value="">-- Choisir une difficulté d\'abord --</option>';
+            return;
+        }
+
+        // Filtrer les compétences valides pour cette difficulté
+        var valid = associations
+            .filter(function(a) { return a.id_niveau_difficulte === diffId; })
+            .map(function(a) { return a.id_niveau_competence; });
+
+        compSelect.innerHTML = '<option value="">-- Choisir --</option>';
+        allCompetences.forEach(function(c) {
+            if (valid.indexOf(c.id_niveau_competence) !== -1) {
+                var opt = document.createElement("option");
+                opt.value = c.id_niveau_competence;
+                opt.textContent = c.libelle;
+                if (c.id_niveau_competence === currentCompetence) opt.selected = true;
+                compSelect.appendChild(opt);
+            }
+        });
     }
 
-    // Filtrer les compétences valides pour cette difficulté
-    const valid = associations
-        .filter(a => a.id_niveau_difficulte === diffId)
-        .map(a => a.id_niveau_competence);
-
-    compSelect.innerHTML = "<option value=\"\">-- Choisir --</option>";
-    allCompetences.forEach(c => {
-        if (valid.includes(c.id_niveau_competence)) {
-            const opt = document.createElement("option");
-            opt.value = c.id_niveau_competence;
-            opt.textContent = c.libelle;
-            if (c.id_niveau_competence === currentCompetence) opt.selected = true;
-            compSelect.appendChild(opt);
-        }
-    });
-}
-
-// Écouter les changements de difficulté
-diffSelect.addEventListener("change", () => { updateCompetences(); });
-// Initialiser au chargement si une difficulté est déjà sélectionnée (mode édition)
-if (diffSelect.value) updateCompetences();
-</script>';
-?>
+    // Écouter les changements de difficulté
+    diffSelect.addEventListener("change", function() { updateCompetences(); });
+    // Initialiser au chargement si une difficulté est déjà sélectionnée (mode édition)
+    if (diffSelect.value) updateCompetences();
+</script>
+<?php $pageScripts = ob_get_clean(); ?>
