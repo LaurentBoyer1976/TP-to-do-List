@@ -15,8 +15,7 @@
 <?php
 // PhpStorm signale des "closing tag matches nothing" sur </div>, </body>, </html>
 // car ce template partiel est inclus par les pages principales qui ouvrent ces balises
-// dans header.php.
-//C'est un comportement normal du pattern header/footer en PHP.
+// dans header.php. C'est un comportement normal du pattern header/footer en PHP.
 ?>
 </div>
 <footer class="text-center text-muted py-4 mt-5 border-top">
